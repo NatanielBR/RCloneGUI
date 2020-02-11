@@ -7,14 +7,8 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import rclone.Main;
-import rclone.config.Configuracao.Tipos;
 import rclone.models.drive.Remote;
-import rclone.wrapper.RCloneWrapper;
 
 /**
  * Classe que é o controle do fxml "novoRemoto.fxml".
@@ -37,19 +31,6 @@ public class NovoRemotoController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		remotos.setEditable(false);
-//		remotos.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-//			@Override
-//			public ListCell<String> call(ListView<String> arg0) {
-//				return new ListCell<String>() {
-//					@Override
-//					protected void updateItem(String arg0, boolean arg1) {
-//						super.updateItem(arg0, arg1);
-//						if (arg0 == null && arg1) return;
-//						setText(arg0);
-//					}
-//				};
-//			}
-//		});
 		listRemotes = (Main.wrapper.listRemotes());
 		listRemotes.stream().map(a->a.getRemoteName()).forEach(remotos.getItems()::add);
 		remotos.getSelectionModel().selectFirst();

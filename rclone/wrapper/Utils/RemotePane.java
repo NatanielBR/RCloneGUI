@@ -63,7 +63,7 @@ public class RemotePane extends BorderPane {
 		
 		monoRcloneTask = new RCloneService(remote);
 		monoRcloneTask.setOnScheduled(a->{
-			bugFix();
+			pastaList.refresh();
 		});
 		monoRcloneTask.setOnSucceeded((a) -> {
 			List<FileRemote> lista = monoRcloneTask.getValue();
@@ -72,7 +72,6 @@ public class RemotePane extends BorderPane {
 			setAllInPastaList(lista.stream().filter(b -> b.isDirectory()).collect(Collectors.toList()));
 			// filtra oque não for diretorio
 			lista.stream().filter(b -> !b.isDirectory()).forEach(arquivoList.getItems()::add);
-			bugFix();
 		});
 
 		fileCell = new Callback<ListView<FileRemote>, ListCell<FileRemote>>() {
@@ -83,6 +82,8 @@ public class RemotePane extends BorderPane {
 					protected void updateItem(FileRemote item, boolean empty) {
 						super.updateItem(item, empty);
 						if (empty || item == null) {
+							setText(null);
+							setGraphic(null);
 							return;
 						}
 						var name = item.getName();
@@ -107,6 +108,8 @@ public class RemotePane extends BorderPane {
 								monoRcloneTask.releaseDirectory();
 								monoRcloneTask.restart();
 							});
+							setText(null);
+							setGraphic(null);
 							return;
 						}
 						var treeItem = treeItemProperty().get();
@@ -153,15 +156,7 @@ public class RemotePane extends BorderPane {
 
 		monoRcloneTask.start();
 	}
-	/**
-	 * Metodo que tenta corrigir o bug do javafx de criar itens fantasma.
-	 */
-	private void bugFix() {
-		pastaList.setCellFactory(null);
-		arquivoList.setCellFactory(null);
-		pastaList.setCellFactory(folderCell);
-		arquivoList.setCellFactory(fileCell);
-	}
+	
 	/**
 	 * Metodo para inserir uma lista no TreeView.
 	 * Usando um outro metodo para converter de 
@@ -195,12 +190,6 @@ public class RemotePane extends BorderPane {
 	 */	
 	private List<TreeItem<FileRemote>> transformListToTreeItem(List<FileRemote> listA) {
 		return listA.stream().map(a -> new TreeItem<FileRemote>(a))
-				.map(a-> {
-					a.expandedProperty().addListener(b->{
-						bugFix();
-					});
-					return a;
-				})
 				.collect(Collectors.toList());
 	}
 

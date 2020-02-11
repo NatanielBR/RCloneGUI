@@ -3,8 +3,6 @@ package rclone.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import rclone.models.drive.Remote;
 /**
  * Representa as Configurações padrão com as seguintes chaves e  valores:
  * RCLONE_LOCAL: rbin/rclone (caso seja windows, a barra será

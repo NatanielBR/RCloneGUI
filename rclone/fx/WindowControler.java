@@ -16,12 +16,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Callback;
 import rclone.Main;
-import rclone.config.Configuracao;
 import rclone.config.Configuracao.Tipos;
 import rclone.models.drive.Remote;
-import rclone.wrapper.RCloneWrapper;
 import rclone.wrapper.Utils.RemotePane;
 
 public class WindowControler implements Initializable {
@@ -36,6 +33,8 @@ public class WindowControler implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		@SuppressWarnings("unchecked")
+		List<String> remotos = (List<String>) Main.config.getValor(Tipos.REMOTOS_ABERTOS);
 		newIcon = (new Image(Main.loadResource("plus-circle-outline.png"), 16, 16, true, true));
 		novoRemoto.setGraphic(new ImageView(newIcon));
 		novoRemoto.setTooltip(new Tooltip("Novo Remoto"));
@@ -61,8 +60,6 @@ public class WindowControler implements Initializable {
 					Tab tb = new Tab(resultado.getRemoteName());
 					tb.setContent(new RemotePane(resultado));
 					remotosTab.getTabs().add(tb);
-					var tipo = Tipos.REMOTOS_ABERTOS;
-					List<String> remotos = (List<String>) Main.config.getValor(tipo);
 					remotos.add(resultado.getRemoteName());
 					Main.config.setChaveEValor(Tipos.REMOTOS_ABERTOS, remotos);
 				}
@@ -72,7 +69,6 @@ public class WindowControler implements Initializable {
 			}
 		});
 		//Carregar Remotos;
-		List<String> remotos = (List<String>) Main.config.getValor(Tipos.REMOTOS_ABERTOS);
 		remotos.stream().map(a-> Main.wrapper.getRemoteByName(a))
 		.filter(a-> a != null)
 		.map(a->{
