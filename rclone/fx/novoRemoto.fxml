@@ -1,23 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ButtonType?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DialogPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 
-<DialogPane prefHeight="90.0" prefWidth="298.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rclone.fx.NovoRemotoController">
-   <content>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <Label layoutY="6.0" text="Nome do Remoto;" />
-            <ComboBox fx:id="remotos" editable="true" layoutX="126.0" layoutY="1.0" prefWidth="150.0" />
-         </children>
-      </AnchorPane>
-   </content>
-   <buttonTypes>
-      <ButtonType fx:constant="CLOSE" />
-      <ButtonType fx:constant="FINISH" />
-   </buttonTypes>
-</DialogPane>
+<VBox fx:id="propVB" fillWidth="false" spacing="6.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rclone.fx.NovoRemotoController">
+    <children>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefHeight="17.0" prefWidth="69.0" style="-fx-font-weight: bold;" text="Nome:" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="25.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="14.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefHeight="17.0" prefWidth="69.0" style="-fx-font-weight: bold;" text="Tipo: " HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets right="6.0" top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <ChoiceBox prefHeight="25.0" prefWidth="149.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </ChoiceBox>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" text="Client Id:" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="26.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" text="Client Secret:">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="25.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" text="Scope:">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="26.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" text="Root Folder:">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="26.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" style="-fx-font-weight: bold;" text="User: ">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="26.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+        <HBox prefHeight="23.0" spacing="20.0" VBox.vgrow="NEVER">
+            <children>
+                <Label prefWidth="69.0" style="-fx-font-weight: bold;" text="Pass:">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                </Label>
+                <TextField prefHeight="26.0" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+            </children>
+        </HBox>
+    </children>
+</VBox>

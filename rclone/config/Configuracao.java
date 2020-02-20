@@ -2,91 +2,165 @@ package rclone.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
- * Classe abstrada de configuração. Essa classe irá ser
- * salva no disco rigido com o nome config.data .
+ * Classe abstrada de configuração. Essa classe irá ser salva no disco rigido
+ * com o nome gui.prop.
+ *
  * @author neoold
  *
  */
 @SuppressWarnings("serial")
-public abstract class Configuracao implements Serializable{
-	//Lista de propriedades.
-	public abstract HashMap<Tipos, Object> getPropriedades();
-	/**
-	 * Metodo para obter o valor de uma propriedade usando chaves
-	 * ja definidas.
-	 * @param chave Um tipo de chave.
-	 * @return Uma objeto "bruto" onde deverá ser usado um cast
-	 * para transformar em um objeto "utilizavel".
-	 */
-	public Object getValor(Tipos chave) {
-		return getPropriedades().get(chave);
-	}
-	/**
-	 * Metodo para inserir uma chave e um valor. 
-	 * @param chave Uma chave ja definida.
-	 * @param valor Um Objeto qualquer, entretando
-	 * o tipo de objeto deve ser do mesmo tipo,
-	 * especificado na documentação do Tipos.
-	 * @see Tipos
-	 */
-	public void setChaveEValor(Tipos chave, Object valor) {
-		getPropriedades().put(chave, valor);
-	}
-	/**
-	 * Metodo para salvar uma configuração no disco rigido,
-	 * usando ObjectOutputStream. O arquivo será salvo com o nome
-	 * config.data .
-	 * @param conf Uma configuração para ser salva.
-	 */
-	public static void guardarConfig(Configuracao conf) {
-		File f = new File("config.data");
-		try {
-			f.delete();
-			f.createNewFile();
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
-			out.writeObject(conf);
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * Metodo para carregar uma configuração.
-	 * @return Uma configuração carregada ou null caso ocorra um erro.
-	 */
-	public static Configuracao carregarConfig() {
-		File f = new File("config.data");
-		Configuracao config;
-		if (!f.exists()) return null;
-		try {
-			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(f));
-			config = (Configuracao) inp.readObject();
-			inp.close();
-		}catch(Exception err) {
-			err.printStackTrace();
-			return null;
-		}
-		return config;
-	}
-	
-	public enum Tipos{
-		/**
-		 * Representa o local onde o binario do rclone se encontra.
-		 * O tipo de retorno é <b>String<\b>.
-		 */
-		RCLONE_LOCAL(),
-		/**
-		 * Representa os remotos abertos.
-		 * O tipo de retorno é <b>List<String><\b>
-		 * Ou seja, uma lista de nomes dos remotos a ser carregado.
-		 */
-		REMOTOS_ABERTOS();
-	}
+public class Configuracao extends Properties {
+
+    /**
+     * Metodo para carregar o gui.prop existende no disco. Caso o arquivo não
+     * existe irá retornar null ou caso alguns das chaves não seja informado.
+     *
+     * @return Uma configuração ou null caso o arquivo não exista ou as chaves
+     * não seja informadas.
+     */
+    public static Configuracao carregarConfig() {
+        Configuracao conf = new Configuracao();
+        try {
+            File f = new File("gui.prop");
+            if (!f.exists()) {
+                return null;
+            }
+            conf.load(new FileInputStream(f));
+            for (var tipo : Tipos.values()) {
+                if (!conf.containsKey(tipo.valor)) {
+                    return null;
+                }
+            }
+        } catch (IOException err) {
+            err.printStackTrace();
+            System.exit(-1);
+        }
+
+        return conf;
+    }
+
+    /**
+     * Metodo para salvar as configuração em gui.prop.
+     *
+     * @param conf A configuração.
+     */
+    public static void guardarConfig(Configuracao conf) {
+        try {
+            conf.store(new FileOutputStream("gui.prop"), null);
+        } catch (FileNotFoundException ex) {
+            try {
+                new File("gui.prop").createNewFile();
+                guardarConfig(conf);
+            } catch (IOException ex1) {
+                ex1.printStackTrace();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Metodo para obter o valor de uma propriedade usando chaves ja definidas.
+     *
+     * @param chave Um tipo de chave.
+     * @return Uma objeto "bruto" onde deverá ser usado um cast para transformar
+     * em um objeto "utilizavel".
+     */
+    public String getValor(Tipos chave) {
+        return getProperty(chave.valor);
+    }
+
+    /**
+     * Metodo para obter o valor de uma propriedade usando chaves ja definidas.
+     *
+     * @param chave Um tipo de chave.
+     * @return Uma objeto "bruto" onde deverá ser usado um cast para transformar
+     * em um objeto "utilizavel".
+     */
+    public List<String> getValorAsList(Tipos chave) {
+        return stringToCollection(getValor(chave));
+    }
+
+    /**
+     * Metodo para inserir uma chave e um valor.
+     *
+     * @param chave Uma chave ja definida.
+     * @param valor Um Objeto qualquer, entretando o tipo de objeto deve ser do
+     * mesmo tipo, especificado na documentação do Tipos.
+     * @see Tipos
+     */
+    public void setChaveEValor(Tipos chave, String valor) {
+        setProperty(chave.valor, valor);
+    }
+
+    /**
+     * Metodo para inserir uma chave e uma lista de String.
+     *
+     * @param chave Uma chave ja definida.
+     * @param valor Um Objeto qualquer, entretando o tipo de objeto deve ser do
+     * mesmo tipo, especificado na documentação do Tipos.
+     * @see Tipos
+     */
+    public void setChaveEValor(Tipos chave, Collection<String> valor) {
+        setProperty(chave.valor, collectionToString(valor));
+    }
+
+    /**
+     * Metodo para padronizar a transformação de uma coleção para String.
+     *
+     * @param lista Uma lista de String ou que herde dela.
+     * @return Uma String tendo cada item da lista separado por ';'.
+     */
+    private String collectionToString(Collection<String> lista) {
+        if (lista.isEmpty()) {
+            return "";
+        }
+        return String.join(";", lista);
+    }
+
+    /**
+     * Metodo para padronizar a transformação de uma String em uma coleção.
+     *
+     * @param valor
+     * @return Uma lista de String.
+     */
+    private List<String> stringToCollection(String valor) {
+        if (valor == null || valor.isEmpty() || valor.isBlank()) {
+            return Collections.EMPTY_LIST;
+        }
+        String[] array = valor.split(";");
+        var list = new ArrayList<String>(array.length);
+        Collections.addAll(list, array);
+        return list;
+    }
+
+    public enum Tipos {
+        /**
+         * Representa o local onde o binario do rclone se encontra.
+         *
+         */
+        RCLONE_LOCAL("rcloneLocal"),
+        /**
+         * Representa os remotos abertos. Ou seja, uma lista de nomes dos
+         * remotos a ser carregado.
+         */
+        REMOTOS_ABERTOS("remotosAbertos");
+
+        public final String valor;
+
+        private Tipos(String valor) {
+            this.valor = valor;
+        }
+
+    }
 }
